@@ -1,9 +1,17 @@
 const select = document.createElement("select");
-fetch("/proxy/list").then((res) => {
-  console.log(res);
-});
+fetch("/proxy/list")
+  .then((res) => res.json())
+  .then((data) => {
+    if (data?.list?.length) {
+      let innerHtml = "";
+      data.list.forEach((item) => {
+        innerHtml += `<option value=${item.value}>${item.label}</option>`;
+      });
+      select.innerHTML = innerHtml;
+    }
+  });
 select.onchange = (e: any) => {
-  console.log(e.target.value);
+  fetch(`/proxy/change?proxy=${e.target.value}`);
 };
 
 export default select;
