@@ -58,14 +58,16 @@ var ProxySwitchPlugin = (function () {
         var setupMiddlewares = Server.prototype.setupMiddlewares;
         var normalizeOptions = Server.prototype.normalizeOptions;
         var option = this.option;
-        var proxyKeys = Object.keys(option.proxyList);
+        var proxyKeys = Object.keys((option === null || option === void 0 ? void 0 : option.proxyList) || {});
         Server.prototype.normalizeOptions = function () {
             return __awaiter(this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            this.options.proxy =
-                                option.proxyList[(option === null || option === void 0 ? void 0 : option.defaultProxy) || proxyKeys[0]];
+                            if (proxyKeys.length) {
+                                this.options.proxy =
+                                    option.proxyList[(option === null || option === void 0 ? void 0 : option.defaultProxy) || proxyKeys[0]];
+                            }
                             return [4, normalizeOptions.call(this)];
                         case 1:
                             _a.sent();
@@ -75,18 +77,31 @@ var ProxySwitchPlugin = (function () {
             });
         };
         Server.prototype.setupMiddlewares = function (middlewares, devServer) {
-            console.log(this.options.proxy);
+            var _this = this;
             this.app.get("/proxy/list", function (req, res) {
                 res.status(200).json({
                     list: proxyKeys,
                     defaultProxy: option.defaultProxy,
                 });
             });
-            this.app.get("/proxy/change", function (req, res) {
-                var proxy = req.query.proxy;
-                console.log(proxy);
-                res.status(200);
-            });
+            this.app.get("/proxy/change", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+                var proxy;
+                var _a;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            proxy = req.query.proxy;
+                            this.options.proxy = (_a = option === null || option === void 0 ? void 0 : option.proxyList) === null || _a === void 0 ? void 0 : _a[proxy];
+                            return [4, normalizeOptions.call(this)];
+                        case 1:
+                            _b.sent();
+                            this.app._router.stack = this.app._router.stack.slice(0, this.baseRouteStackLength);
+                            setupMiddlewares.call(this, middlewares, devServer);
+                            res.status(200);
+                            return [2];
+                    }
+                });
+            }); });
             this.baseRouteStackLength = this.app._router.stack.length;
             setupMiddlewares.call(this, middlewares, devServer);
         };

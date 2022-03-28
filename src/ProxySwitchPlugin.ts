@@ -11,7 +11,7 @@ try {
 }
 
 interface Option {
-  proxyList: Record<string, any>;
+  proxyList?: Record<string, any>;
   defaultProxy?: string;
 }
 class ProxySwitchPlugin {
@@ -37,26 +37,37 @@ class ProxySwitchPlugin {
     const setupMiddlewares = Server.prototype.setupMiddlewares;
     const normalizeOptions = Server.prototype.normalizeOptions;
     const option = this.option;
-    const proxyKeys = Object.keys(option.proxyList);
+    const proxyKeys = Object.keys(option?.proxyList || {});
+
     Server.prototype.normalizeOptions = async function () {
-      this.options.proxy =
-        option.proxyList[option?.defaultProxy || proxyKeys[0]];
+      if (proxyKeys.length) {
+        this.options.proxy =
+          option.proxyList[option?.defaultProxy || proxyKeys[0]];
+      }
       await normalizeOptions.call(this);
     };
+
     Server.prototype.setupMiddlewares = function (middlewares, devServer) {
-      console.log(this.options.proxy);
       this.app.get("/proxy/list", (req, res) => {
         res.status(200).json({
           list: proxyKeys,
           defaultProxy: option.defaultProxy,
         });
       });
-      this.app.get("/proxy/change", (req, res) => {
+      this.app.get("/proxy/change", async (req, res) => {
         const { proxy } = req.query;
-        console.log(proxy);
+        this.options.proxy = option?.proxyList?.[proxy];
+        await normalizeOptions.call(this);
+        this.app._router.stack = this.app._router.stack.slice(
+          0,
+          this.baseRouteStackLength
+        );
+        setupMiddlewares.call(this, middlewares, devServer);
         res.status(200);
       });
+
       this.baseRouteStackLength = this.app._router.stack.length;
+
       setupMiddlewares.call(this, middlewares, devServer);
     };
   }

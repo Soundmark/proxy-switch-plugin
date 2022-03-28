@@ -749,13 +749,21 @@ module.exports = function (webpackEnv) {
             },
           },
         }),
-      new ProxySwitchPlugin({}, Server),
+      new ProxySwitchPlugin(
+        {
+          proxyList: {
+            peter: {
+              "/api": "http://localhost:3000",
+            },
+            park: {
+              "/api": "http://localhost:3001",
+            },
+          },
+          defaultProxy: "park",
+        },
+        Server
+      ),
     ].filter(Boolean),
-    devServer: {
-      proxy: {
-        "/api": "http://localhost:3000",
-      },
-    },
     // Turn off performance processing because we utilize
     // our own hints via the FileSizeReporter
     performance: false,
