@@ -63,7 +63,6 @@ class ProxySwitchPlugin {
       });
       this.app.get("/proxy/change", async (req, res) => {
         const { proxy } = req.query;
-        console.log(proxy);
         this.options.proxy = option?.proxyList?.[proxy];
         await normalizeOptions.call(this);
         this.app._router.stack = this.app._router.stack.slice(

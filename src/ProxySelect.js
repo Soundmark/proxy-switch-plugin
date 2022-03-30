@@ -1,4 +1,5 @@
 const select = document.createElement("select");
+select.classList.add("proxy-select");
 fetch("/proxy/list")
   .then((res) => res.json())
   .then((data) => {
@@ -15,7 +16,7 @@ fetch("/proxy/list")
       select.value = sessionProxyKey || data?.defaultProxy || data.list[0];
     }
   });
-select.onchange = (e: any) => {
+select.onchange = (e) => {
   sessionStorage.setItem("proxy-key", e.target.value);
   fetch(`/proxy/change?proxy=${e.target.value}`);
 };

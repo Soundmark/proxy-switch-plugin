@@ -1,6 +1,7 @@
 import "./App.css";
 import Select from "../../../src/ProxySelect";
 import { useEffect } from "react";
+import "../../../src/ProxySelect.css";
 
 function App() {
   useEffect(() => {
