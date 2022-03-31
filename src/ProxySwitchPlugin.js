@@ -1,5 +1,7 @@
 let Server;
 const chalk = require("chalk");
+const { proxyFactory } = require("./utils");
+
 try {
   Server = require("webpack-dev-server");
 } catch (e) {
@@ -47,10 +49,11 @@ class ProxySwitchPlugin {
     // version 3
     if (typeof Server.prototype.setupFeatures === "function") {
       const setupFeatures = Server.prototype.setupFeatures;
-      this.options.proxy =
-        option.proxyList[option?.defaultProxy || proxyKeys[0]];
 
       Server.prototype.setupFeatures = function () {
+        this.options.proxy = proxyFactory(
+          option.proxyList[option?.defaultProxy || proxyKeys[0]]
+        );
         this.app.get("/proxy/list", (req, res) => {
           res.status(200).json({
             list: proxyKeys,
@@ -59,7 +62,7 @@ class ProxySwitchPlugin {
         });
         this.app.get("/proxy/change", async (req, res) => {
           const { proxy } = req.query;
-          this.options.proxy = option?.proxyList?.[proxy];
+          this.options.proxy = proxyFactory(option?.proxyList?.[proxy]);
           this.app._router.stack = this.app._router.stack.slice(
             0,
             this.baseRouteStackLength
@@ -79,8 +82,9 @@ class ProxySwitchPlugin {
 
       Server.prototype.normalizeOptions = async function () {
         if (proxyKeys.length) {
-          this.options.proxy =
-            option.proxyList[option?.defaultProxy || proxyKeys[0]];
+          this.options.proxy = proxyFactory(
+            option.proxyList[option?.defaultProxy || proxyKeys[0]]
+          );
         }
         await normalizeOptions.call(this);
       };
@@ -94,7 +98,7 @@ class ProxySwitchPlugin {
         });
         this.app.get("/proxy/change", async (req, res) => {
           const { proxy } = req.query;
-          this.options.proxy = option?.proxyList?.[proxy];
+          this.options.proxy = proxyFactory(option?.proxyList?.[proxy]);
           await normalizeOptions.call(this);
           this.app._router.stack = this.app._router.stack.slice(
             0,
