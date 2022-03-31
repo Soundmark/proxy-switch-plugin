@@ -2,15 +2,15 @@
   "name": "proxy-switch-plugin",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "jest": "^27.5.1"
+  "devDependencies": {},
+  "dependencies": {
+    "chalk": "4.1.2"
   }
 }
