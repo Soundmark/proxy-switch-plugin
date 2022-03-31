@@ -5,7 +5,7 @@ try {
 } catch (e) {
   console.log(
     chalk.yellow(
-      "Warning: Cannot find module webpack-dev-server, try deliver it via parameter"
+      "ProxySwitchPlugin Warning: Cannot find module webpack-dev-server, try deliver it via parameter"
     )
   );
 }
@@ -33,7 +33,7 @@ class ProxySwitchPlugin {
       } else {
         throw new Error(
           chalk.red(
-            'Error: Cannot find Server from parameter, try "npm i webpack-dev-server -D" to solve this problem'
+            'ProxySwitchPlugin Error: Cannot find Server from parameter, try "npm i webpack-dev-server -D" to solve this problem'
           )
         );
       }
