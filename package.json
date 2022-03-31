@@ -1,14 +1,16 @@
 {
   "name": "proxy-switch-plugin",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "help switch webpack devServer proxy without restart",
   "main": "src/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "files": [
+    "src"
+  ],
+  "author": "郑家豪",
+  "bugs": "https://github.com/Soundmark/proxy-switch-plugin/issues",
+  "homepage": "https://github.com/Soundmark/proxy-switch-plugin#readme",
+  "repository": "https://github.com/Soundmark/proxy-switch-plugin.git",
+  "license": "MIT",
   "devDependencies": {},
   "dependencies": {
     "chalk": "4.1.2"
