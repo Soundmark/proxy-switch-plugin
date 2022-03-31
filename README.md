@@ -131,5 +131,5 @@ function Index() {
 
 #### [MIT](./LICENSE)
 
-[npm]: https://img.shields.io/npm/v/webpack-dev-server.svg
+[npm]: https://img.shields.io/npm/v/proxy-switch-plugin.svg
 [npm-url]: https://www.npmjs.com/package/proxy-switch-plugin
