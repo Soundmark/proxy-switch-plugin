@@ -753,10 +753,14 @@ module.exports = function (webpackEnv) {
         {
           proxyList: {
             peter: {
-              "/api": "http://localhost:3000",
+              "/api": {
+                target: "http://localhost:3000",
+              },
             },
             park: {
-              "/api": "http://localhost:3001",
+              "/api": {
+                target: "http://localhost:3000",
+              },
             },
           },
           defaultProxy: "park",

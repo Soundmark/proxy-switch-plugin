@@ -1,3 +1,36 @@
+/**
+ * @typedef {Object} ProxyItem
+ * @property {string} [target]
+ * @property {string} [forward]
+ * @property {Object} [agent]
+ * @property {Object} [ssl]
+ * @property {boolean} [ws]
+ * @property {boolean} [xfwd]
+ * @property {boolean} [secure]
+ * @property {boolean} [toProxy]
+ * @property {boolean} [prependPath]
+ * @property {boolean} [ignorePath]
+ * @property {string} [localAddress]
+ * @property {boolean} [changeOrigin]
+ * @property {boolean} [preserveHeaderKeyCase]
+ * @property {string} [auth]
+ * @property {Object} [headers]
+ * @property {number} [timeout]
+ * @property {number} [proxyTimeout]
+ * @property {Object|Function} [pathRewrite]
+ * @property {Object|Function} [router]
+ */
+
+/**
+ * @typedef {Object.<string, Object.<string, ProxyItem>>} ProxyList
+ */
+
+/**
+ * @typedef {Object} Option
+ * @property {ProxyList} [proxyList]
+ * @property {string} [defaultProxy]
+ */
+
 let Server;
 const chalk = require("chalk");
 const { proxyFactory } = require("./utils");
@@ -12,11 +45,6 @@ try {
   );
 }
 
-/**
- * @typedef {Object} Option
- * @property {Array} [proxyList]
- * @property {string} [defaultProxy]
- */
 class ProxySwitchPlugin {
   /** @type {Option} */
   option;
@@ -25,7 +53,7 @@ class ProxySwitchPlugin {
 
   /**
    * @param {Option} option
-   * @param {*} DevServer
+   * @param {*} [DevServer]
    */
   constructor(option, DevServer) {
     this.option = option;
