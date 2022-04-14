@@ -56,6 +56,20 @@ class ProxySwitchPlugin {
    * @param {*} [DevServer]
    */
   constructor(option, DevServer) {
+    if (!option) {
+      throw new Error(
+        chalk.red(
+          "ProxySwitchPlugin Error: It seems that you forget to deliver the option parameter, please deliver it and try again"
+        )
+      );
+    }
+    if (typeof option !== "object") {
+      throw new Error(
+        chalk.red(
+          "ProxySwitchPlugin Error: The option parameter should be an object, see https://github.com/Soundmark/proxy-switch-plugin#readme"
+        )
+      );
+    }
     this.option = option;
     if (!Server) {
       if (DevServer) {
@@ -72,7 +86,9 @@ class ProxySwitchPlugin {
 
   apply() {
     const option = this.option;
-    const proxyKeys = Object.keys(option?.proxyList || {});
+    const proxyKeys = Object.keys(option.proxyList || {});
+    // break if nothing in proxylist
+    if (!proxyKeys.length) return;
 
     // version 3
     if (typeof Server.prototype.setupFeatures === "function") {
@@ -80,7 +96,7 @@ class ProxySwitchPlugin {
 
       Server.prototype.setupFeatures = function () {
         this.options.proxy = proxyFactory(
-          option.proxyList[option?.defaultProxy || proxyKeys[0]]
+          option.proxyList[option.defaultProxy || proxyKeys[0]]
         );
         this.app.get("/proxy/list", (req, res) => {
           res.status(200).json({
@@ -90,7 +106,7 @@ class ProxySwitchPlugin {
         });
         this.app.get("/proxy/change", async (req, res) => {
           const { proxy } = req.query;
-          this.options.proxy = proxyFactory(option?.proxyList?.[proxy]);
+          this.options.proxy = proxyFactory(option.proxyList[proxy]);
           this.app._router.stack = this.app._router.stack.slice(
             0,
             this.baseRouteStackLength
@@ -111,7 +127,7 @@ class ProxySwitchPlugin {
       Server.prototype.normalizeOptions = async function () {
         if (proxyKeys.length) {
           this.options.proxy = proxyFactory(
-            option.proxyList[option?.defaultProxy || proxyKeys[0]]
+            option.proxyList[option.defaultProxy || proxyKeys[0]]
           );
         }
         await normalizeOptions.call(this);
@@ -126,7 +142,7 @@ class ProxySwitchPlugin {
         });
         this.app.get("/proxy/change", async (req, res) => {
           const { proxy } = req.query;
-          this.options.proxy = proxyFactory(option?.proxyList?.[proxy]);
+          this.options.proxy = proxyFactory(option.proxyList[proxy]);
           await normalizeOptions.call(this);
           this.app._router.stack = this.app._router.stack.slice(
             0,
