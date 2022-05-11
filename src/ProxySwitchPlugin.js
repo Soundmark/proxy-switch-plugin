@@ -112,7 +112,7 @@ class ProxySwitchPlugin {
             this.baseRouteStackLength
           );
           setupFeatures.call(this);
-          res.status(200);
+          res.status(200).json({});
         });
 
         this.baseRouteStackLength = this.app._router.stack.length;
@@ -149,7 +149,7 @@ class ProxySwitchPlugin {
             this.baseRouteStackLength
           );
           setupMiddlewares.call(this, middlewares, devServer);
-          res.status(200);
+          res.status(200).json({});
         });
 
         this.baseRouteStackLength = this.app._router.stack.length;
