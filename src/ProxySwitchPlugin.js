@@ -113,6 +113,11 @@ class ProxySwitchPlugin {
           );
           setupFeatures.call(this);
           res.status(200).json({});
+          console.log(
+            chalk.green(
+              `ProxySwitchPlugin: Successfully switch proxy to '${proxy}'`
+            )
+          );
         });
 
         this.baseRouteStackLength = this.app._router.stack.length;
@@ -150,6 +155,11 @@ class ProxySwitchPlugin {
           );
           setupMiddlewares.call(this, middlewares, devServer);
           res.status(200).json({});
+          console.log(
+            chalk.green(
+              `ProxySwitchPlugin: Successfully switch proxy to '${proxy}'`
+            )
+          );
         });
 
         this.baseRouteStackLength = this.app._router.stack.length;
