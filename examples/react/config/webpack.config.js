@@ -759,11 +759,12 @@ module.exports = function (webpackEnv) {
             },
             park: {
               "/api": {
-                target: "http://localhost:3000",
+                target: "http://localhost:3002",
               },
             },
           },
           defaultProxy: "park",
+          watchPath: path.join(__dirname, 'webpack.config.js'),
         },
         Server
       ),

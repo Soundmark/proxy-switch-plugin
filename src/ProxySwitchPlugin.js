@@ -29,11 +29,13 @@
  * @typedef {Object} Option
  * @property {ProxyList} [proxyList]
  * @property {string} [defaultProxy]
+ * @property {string} [watchPath]
  */
 
 let Server;
 const chalk = require("chalk");
-const { proxyFactory } = require("./utils");
+const { proxyFactory, onConfigChange } = require("./utils");
+const name = "proxy-switch-plugin";
 
 try {
   Server = require("webpack-dev-server");
@@ -50,6 +52,8 @@ class ProxySwitchPlugin {
   option;
   /** @type {number} */
   baseRouteStackLength;
+  /** @type {string} */
+  name = name;
 
   /**
    * @param {Option} option
@@ -95,18 +99,23 @@ class ProxySwitchPlugin {
       const setupFeatures = Server.prototype.setupFeatures;
 
       Server.prototype.setupFeatures = function () {
+        this.pluginOption = option;
+        this.proxyKeys = proxyKeys;
+
         this.options.proxy = proxyFactory(
-          option.proxyList[option.defaultProxy || proxyKeys[0]]
+          this.pluginOption.proxyList[
+            this.pluginOption.defaultProxy || this.proxyKeys[0]
+          ]
         );
         this.app.get("/proxy/list", (req, res) => {
           res.status(200).json({
-            list: proxyKeys,
-            defaultProxy: option.defaultProxy,
+            list: this.proxyKeys,
+            defaultProxy: this.pluginOption.defaultProxy,
           });
         });
         this.app.get("/proxy/change", async (req, res) => {
           const { proxy } = req.query;
-          this.options.proxy = proxyFactory(option.proxyList[proxy]);
+          this.options.proxy = proxyFactory(this.pluginOption.proxyList[proxy]);
           this.app._router.stack = this.app._router.stack.slice(
             0,
             this.baseRouteStackLength
@@ -123,6 +132,13 @@ class ProxySwitchPlugin {
         this.baseRouteStackLength = this.app._router.stack.length;
 
         setupFeatures.call(this);
+
+        if (this.pluginOption.watchPath) {
+          this._watch(this.pluginOption.watchPath);
+          const watcher =
+            this.contentBaseWatchers[this.contentBaseWatchers.length - 1];
+          watcher.on("change", onConfigChange.bind(this));
+        }
       };
     } else {
       //version 4
@@ -130,9 +146,14 @@ class ProxySwitchPlugin {
       const normalizeOptions = Server.prototype.normalizeOptions;
 
       Server.prototype.normalizeOptions = async function () {
-        if (proxyKeys.length) {
+        this.pluginOption = option;
+        this.proxyKeys = proxyKeys;
+
+        if (this.proxyKeys.length) {
           this.options.proxy = proxyFactory(
-            option.proxyList[option.defaultProxy || proxyKeys[0]]
+            this.pluginOption.proxyList[
+              this.pluginOption.defaultProxy || thisproxyKeys[0]
+            ]
           );
         }
         await normalizeOptions.call(this);
@@ -141,13 +162,13 @@ class ProxySwitchPlugin {
       Server.prototype.setupMiddlewares = function (middlewares, devServer) {
         this.app.get("/proxy/list", (req, res) => {
           res.status(200).json({
-            list: proxyKeys,
-            defaultProxy: option.defaultProxy,
+            list: this.proxyKeys,
+            defaultProxy: this.pluginOption.defaultProxy,
           });
         });
         this.app.get("/proxy/change", async (req, res) => {
           const { proxy } = req.query;
-          this.options.proxy = proxyFactory(option.proxyList[proxy]);
+          this.options.proxy = proxyFactory(this.pluginOption.proxyList[proxy]);
           await normalizeOptions.call(this);
           this.app._router.stack = this.app._router.stack.slice(
             0,
@@ -165,6 +186,12 @@ class ProxySwitchPlugin {
         this.baseRouteStackLength = this.app._router.stack.length;
 
         setupMiddlewares.call(this, middlewares, devServer);
+
+        if (this.pluginOption.watchPath) {
+          this.watchFiles(this.pluginOption.watchPath);
+          const watcher = this.staticWatchers[this.staticWatchers.length - 1];
+          watcher.on("change", onConfigChange.bind(this));
+        }
       };
     }
   }

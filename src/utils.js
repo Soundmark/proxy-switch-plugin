@@ -24,4 +24,25 @@ const proxyFactory = (proxyConfig = {}) => {
   return proxy;
 };
 
-module.exports = { proxyFactory };
+const onConfigChange = () => {
+  delete require.cache[require.resolve(this.pluginOption.watchPath)];
+  let config = require(this.pluginOption.watchPath);
+  if (typeof config === "function") {
+    config = config("development");
+  }
+  const plugins = config.plugins;
+  if (plugins && plugins.length) {
+    const target = plugins.find((item) => item.name === name);
+    if (target) {
+      this.pluginOption.proxyList = target.option.proxyList;
+      this.proxyKeys = Object.keys(this.pluginOption.proxyList || {});
+      this.options.proxy = proxyFactory(
+        this.pluginOption.proxyList[
+          this.pluginOption.defaultProxy || this.proxyKeys[0]
+        ]
+      );
+    }
+  }
+};
+
+module.exports = { proxyFactory, onConfigChange };
