@@ -15,7 +15,7 @@ const proxyFactory = (proxyConfig = {}) => {
           }
         }
         proxyRes.headers["x-real-url"] =
-          options.target.replace(/\/$/, "") + url;
+          options.target.replace(/\/$/, "") + req.url;
       },
       ...options,
       context: match,
@@ -24,7 +24,7 @@ const proxyFactory = (proxyConfig = {}) => {
   return proxy;
 };
 
-const onConfigChange = () => {
+const onConfigChange = function () {
   delete require.cache[require.resolve(this.pluginOption.watchPath)];
   let config = require(this.pluginOption.watchPath);
   if (typeof config === "function") {
@@ -32,7 +32,7 @@ const onConfigChange = () => {
   }
   const plugins = config.plugins;
   if (plugins && plugins.length) {
-    const target = plugins.find((item) => item.name === name);
+    const target = plugins.find((item) => item.name === "proxy-switch-plugin");
     if (target) {
       this.pluginOption.proxyList = target.option.proxyList;
       this.proxyKeys = Object.keys(this.pluginOption.proxyList || {});
