@@ -14,7 +14,7 @@ const proxyFactory = (proxyConfig = {}) => {
   return proxy;
 };
 
-const onConfigChange = function () {
+const updateConfig = function () {
   delete require.cache[require.resolve(this.pluginOption.watchPath)];
   let config = require(this.pluginOption.watchPath);
   if (typeof config === "function") {
@@ -24,6 +24,11 @@ const onConfigChange = function () {
   if (plugins && plugins.length) {
     const target = plugins.find((item) => item.name === "proxy-switch-plugin");
     if (target) {
+      if (
+        JSON.stringify(this.pluginOption.proxyList) ===
+        JSON.stringify(target.option.proxyList)
+      )
+        return false;
       this.pluginOption.proxyList = target.option.proxyList;
       this.proxyKeys = Object.keys(this.pluginOption.proxyList || {});
       this.options.proxy = proxyFactory(
@@ -31,8 +36,10 @@ const onConfigChange = function () {
           this.pluginOption.defaultProxy || this.proxyKeys[0]
         ]
       );
+      return true;
     }
   }
+  return false;
 };
 
-module.exports = { proxyFactory, onConfigChange };
+module.exports = { proxyFactory, updateConfig };

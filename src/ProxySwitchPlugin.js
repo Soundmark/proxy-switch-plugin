@@ -34,7 +34,7 @@
 
 let Server;
 const chalk = require("chalk");
-const { proxyFactory, onConfigChange } = require("./utils");
+const { proxyFactory, updateConfig } = require("./utils");
 const name = "proxy-switch-plugin";
 
 try {
@@ -137,7 +137,17 @@ class ProxySwitchPlugin {
           this._watch(this.pluginOption.watchPath);
           const watcher =
             this.contentBaseWatchers[this.contentBaseWatchers.length - 1];
-          watcher.on("change", onConfigChange.bind(this));
+          watcher.on("change", () => {
+            const shouldUpdate = updateConfig.call(this);
+            if (shouldUpdate) {
+              this.app._router.stack = this.app._router.stack.slice(
+                0,
+                this.baseRouteStackLength
+              );
+              setupFeatures.call(this);
+              console.log(chalk.green(`ProxySwitchPlugin: updated!`));
+            }
+          });
         }
       };
     } else {
@@ -190,7 +200,17 @@ class ProxySwitchPlugin {
         if (this.pluginOption.watchPath) {
           this.watchFiles(this.pluginOption.watchPath);
           const watcher = this.staticWatchers[this.staticWatchers.length - 1];
-          watcher.on("change", onConfigChange.bind(this));
+          watcher.on("change", () => {
+            const shouldUpdate = updateConfig.call(this);
+            if (shouldUpdate) {
+              this.app._router.stack = this.app._router.stack.slice(
+                0,
+                this.baseRouteStackLength
+              );
+              setupMiddlewares.call(this, middlewares, devServer);
+              console.log(chalk.green(`ProxySwitchPlugin: updated!`));
+            }
+          });
         }
       };
     }
