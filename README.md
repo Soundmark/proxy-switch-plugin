@@ -49,6 +49,8 @@ module.exports = {
       },
       // 默认的proxy配置的key
       defaultProxy: "小红",
+      // 监控配置变化
+      watchPath: path.join(__dirname, "webpack.config.js"),
     }),
   ],
   // ...
@@ -126,6 +128,12 @@ function Index() {
 - url: /proxy/change
 - params: {proxy: string}
 - method: GET
+
+### 配置热更新(实验性功能)
+
+通过`watchPath`传入 webpack 配置文件的路径可实现配置热更新，即增删改 proxy 配置时也无需重启项目，仅通过刷新页面即可实现配置更新。
+
+> 注意：这是一个实验性功能，因为只在正常的`webpack`配置中进行了少量测试，未在`chainWebpack`中进行测试，请谨慎使用。
 
 ## 协议
 
