@@ -11,7 +11,15 @@
   "homepage": "https://github.com/Soundmark/proxy-switch-plugin#readme",
   "repository": "https://github.com/Soundmark/proxy-switch-plugin.git",
   "license": "MIT",
-  "devDependencies": {},
+  "scripts": {
+    "test": "jest --coverage"
+  },
+  "devDependencies": {
+    "@types/jest": "^28.1.0",
+    "jest": "^28.1.0",
+    "webpack": "^5.72.1",
+    "webpack-dev-server": "^4.9.0"
+  },
   "dependencies": {
     "chalk": "4.1.2"
   }
