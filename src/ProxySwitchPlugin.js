@@ -162,7 +162,7 @@ class ProxySwitchPlugin {
         if (this.proxyKeys.length) {
           this.options.proxy = proxyFactory(
             this.pluginOption.proxyList[
-              this.pluginOption.defaultProxy || thisproxyKeys[0]
+              this.pluginOption.defaultProxy || this.proxyKeys[0]
             ]
           );
         }
