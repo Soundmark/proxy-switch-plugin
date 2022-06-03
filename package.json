@@ -21,6 +21,7 @@
     "webpack-dev-server": "^4.9.0"
   },
   "dependencies": {
-    "chalk": "4.1.2"
+    "chalk": "4.1.2",
+    "webpack-chain": "^6.5.1"
   }
 }
