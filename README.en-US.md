@@ -131,7 +131,7 @@ Of course, the default `select` component is written by `html select` component.
 
 By delivering the webpack config file path from the `watchPath` option, we could update our proxy config without restarting the server and just a fast refresh of the page.
 
-> Notice：This is a experimental feature. Only little test have made on typical `webpack` config. `chainWebpack` config have never test yet. Please use it carefully.
+> Notice：This is a experimental feature which haven't been fully tested yet. Please use it carefully.
 
 ## License
 
