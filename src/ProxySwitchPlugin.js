@@ -54,6 +54,7 @@ class ProxySwitchPlugin {
   baseRouteStackLength;
   /** @type {string} */
   name = name;
+  static name = name;
 
   /**
    * @param {Option} option
@@ -75,20 +76,21 @@ class ProxySwitchPlugin {
       );
     }
     this.option = option;
+    if (DevServer) {
+      Server = DevServer;
+    }
     if (!Server) {
-      if (DevServer) {
-        Server = DevServer;
-      } else {
-        throw new Error(
-          chalk.red(
-            'ProxySwitchPlugin Error: Cannot find Server from parameter, try "npm i webpack-dev-server -D" to solve this problem'
-          )
-        );
-      }
+      throw new Error(
+        chalk.red(
+          'ProxySwitchPlugin Error: Cannot find Server from parameter, try "npm i webpack-dev-server -D" to solve this problem'
+        )
+      );
     }
   }
 
   apply() {
+    console.log(chalk.green("ProxySwitchPlugin Started"));
+
     const option = this.option;
     const proxyKeys = Object.keys(option.proxyList || {});
     // break if nothing in proxylist
