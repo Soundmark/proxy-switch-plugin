@@ -1,6 +1,6 @@
 {
   "name": "proxy-switch-plugin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "help switch webpack devServer proxy without restart",
   "main": "src/index.js",
   "files": [
