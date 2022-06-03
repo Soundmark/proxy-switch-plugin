@@ -1,6 +1,7 @@
 const { defineConfig } = require("@vue/cli-service");
 const ProxySwitchPlugin = require("../../src/ProxySwitchPlugin");
 const Server = require("webpack-dev-server");
+const path = require("path");
 
 module.exports = defineConfig({
   transpileDependencies: true,
@@ -28,6 +29,7 @@ module.exports = defineConfig({
         },
         // 默认的proxy配置的key
         defaultProxy: "小红",
+        watchPath: path.join(__dirname, "vue.config.js"),
       },
       Server,
     ]);
