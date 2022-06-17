@@ -1,3 +1,5 @@
+const clearModule = require("clear-module");
+
 const proxyFactory = (proxyConfig = {}) => {
   const proxyRules = Object.entries(proxyConfig);
   const proxy = proxyRules.map(([match, options]) => {
@@ -15,7 +17,7 @@ const proxyFactory = (proxyConfig = {}) => {
 };
 
 const updateConfig = function () {
-  delete require.cache[require.resolve(this.pluginOption.watchPath)];
+  clearModule(this.pluginOption.watchPath);
   let config = require(this.pluginOption.watchPath);
   let target;
   if (typeof config.chainWebpack === "function") {
