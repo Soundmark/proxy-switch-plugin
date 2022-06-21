@@ -1,7 +1,7 @@
 "use strict";
 
 const webpack = require("webpack");
-const HTMLGeneratorPlugin = require("./html-generator-plugin");
+const HTMLGeneratorPlugin = require("../public/html-generator-plugin");
 const ProxySwitchPlugin = require("../../src/index");
 const path = require("path");
 
@@ -11,7 +11,7 @@ module.exports = {
   mode: "development",
   context: __dirname,
   stats: "none",
-  entry: "./foo.js",
+  entry: "../public/foo.js",
   output: {
     path: "/",
   },
