@@ -85,6 +85,8 @@ module.exports = {
         },
         // the default proxy config key
         defaultProxy: "park",
+        // watch config change
+        watchPath: path.join(__dirname, "vue.config.js"),
       },
     ]);
   },
@@ -130,8 +132,6 @@ Of course, the default `select` component is written by `html select` component.
 ### Config Hot Update(Experimental)
 
 By delivering the webpack config file path from the `watchPath` option, we could update our proxy config without restarting the server and just a fast refresh of the page.
-
-> Notice：This is a experimental feature which haven't been fully tested yet. Please use it carefully.
 
 ## License
 
